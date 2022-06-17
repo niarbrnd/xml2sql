@@ -7,24 +7,11 @@ import cib.learning.data.hobby;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.ResourceBundle;
 
 public class pgsql {
-    //  Database credentials
-    static final String DB_URL = "jdbc:postgresql://192.9.201.28:5432/xml2sql";
-    static final String USER = "xml2sql";
-    static final String PASS = "password";
-    static final String ct="CREATE TABLE IF NOT EXISTS person ("+
-            "id serial PRIMARY KEY, " +
-            "name VARCHAR ( 50 ) NOT NULL unique , "+
-            "birthday TIMESTAMP  NOT NULL "+
-            ");"+
-            "CREATE TABLE IF NOT EXISTS hobby ("+
-            "id serial PRIMARY KEY, " +
-            "idpers integer NOT NULL,"+
-            "complexity  integer NOT NULL, "+
-            "hobby_name VARCHAR ( 50 ) NOT NULL "+
-            ");";
-    public boolean save(Persons pers) throws SQLException {
+    public ResourceBundle resource;
+    public boolean save(Persons pers) {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {
@@ -37,8 +24,10 @@ public class pgsql {
         Statement stmt = null;
         try {
             connection = DriverManager
-                    .getConnection(DB_URL, USER, PASS);
-
+                    .getConnection(
+                            resource.getString("DB_URL"),
+                            resource.getString("USER"),
+                            resource.getString("PASS"));
         } catch (SQLException e) {
             System.out.println("Connection Failed");
             e.printStackTrace();
@@ -51,7 +40,7 @@ public class pgsql {
         }
         try {
             stmt = connection.createStatement();
-            stmt.executeUpdate(ct);
+            stmt.executeUpdate(resource.getString("ct"));
         } catch (SQLException e) {
             System.out.println("CREATE TABLE Failed");
             e.printStackTrace();
@@ -66,7 +55,10 @@ public class pgsql {
         try (
                 Connection connection = null;
                 Connection conn = DriverManager
-                        .getConnection(DB_URL, USER, PASS);
+                        .getConnection(
+                                resource.getString("DB_URL"),
+                                resource.getString("USER"),
+                                resource.getString("PASS"));
                 PreparedStatement statement = conn.prepareStatement(SQL,Statement.RETURN_GENERATED_KEYS);) {
             int count = 0;
 
@@ -97,7 +89,10 @@ public class pgsql {
                 + "VALUES(?,?,?)";
         try (Connection connection = null;
                 Connection conn = DriverManager
-                        .getConnection(DB_URL, USER, PASS);
+                        .getConnection(
+                                resource.getString("DB_URL"),
+                                resource.getString("USER"),
+                                resource.getString("PASS"));
                 PreparedStatement statement = conn.prepareStatement(SQL);) {
             int count = 0;
 
