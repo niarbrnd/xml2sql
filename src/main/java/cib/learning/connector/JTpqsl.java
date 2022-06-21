@@ -4,6 +4,8 @@ import cib.learning.data.Person;
 import cib.learning.data.Persons;
 import cib.learning.data.hobby;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 import java.sql.*;
 import java.text.SimpleDateFormat;
@@ -12,6 +14,7 @@ import java.util.ResourceBundle;
 
 public class JTpqsl {
     public ResourceBundle resource;
+    private JdbcTemplate jdbcTemplate;
     public boolean save(Persons pers) {
         try {
             Class.forName("JdbcTemplate");
@@ -21,68 +24,41 @@ public class JTpqsl {
             return false;
         }
         System.out.println("JdbcTemplate JDBC Driver successfully connected");
-        Connection connection = null;
-        Statement stmt = null;
-        try {
-            connection = DriverManager
-                    .getConnection(
-                            resource.getString("DB_URL"),
-                            resource.getString("USER"),
-                            resource.getString("PASS"));
-        } catch (SQLException e) {
-            System.out.println("Connection Failed");
-            e.printStackTrace();
-            return false;
-        }
-        if (connection != null) {
-            System.out.println("You successfully connected to database now");
-        } else {
-            System.out.println("Failed to make connection to database");
-        }
-        try {
-            stmt = connection.createStatement();
-            stmt.executeUpdate(resource.getString("ct"));
-        } catch (SQLException e) {
-            System.out.println("CREATE TABLE Failed");
-            e.printStackTrace();
-            return false;
-        }
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setDriverClassName("org.postgresql.Driver");
+        dataSource.setUrl(resource.getString("DB_URL"));
+        dataSource.setUsername(resource.getString("USER"));
+        dataSource.setPassword(resource.getString("PASS"));
+        jdbcTemplate = new JdbcTemplate(dataSource);
+        jdbcTemplate.execute(resource.getString("ct"));
         insertPerson(pers.getPersons());
         return true;
     }
     public void insertPerson(List<Person> list) {
-        String SQL = "INSERT INTO person (name,birthday) "
-                + "VALUES(?,date(?))";
-        try (
-                Connection connection = null;
-                Connection conn = DriverManager
-                        .getConnection(
-                                resource.getString("DB_URL"),
-                                resource.getString("USER"),
-                                resource.getString("PASS"));
-                PreparedStatement statement = conn.prepareStatement(SQL,Statement.RETURN_GENERATED_KEYS);) {
-            int count = 0;
+        SimpleJdbcInsert insertIntoUser;
+        for (Person actor : list) {
+            try {
 
-            for (Person actor : list) {
-                statement.setString(1, actor.getName());
-                statement.setString(2, new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(actor.getBirthday()));
-                statement.addBatch();
-                statement.executeBatch();
+                insertIntoUser = new SimpleJdbcInsert(jdbcTemplate).withTableName("user").usingGeneratedKeyColumns("id_user");
+                insertIntoUser.
+                jdbcTemplate.update(
+                        "INSERT INTO person (name,birthday) VALUES (?, date(?))",
+                        actor.getName(), new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(actor.getBirthday()));
                 ResultSet keyset = statement.getGeneratedKeys();
-                if ( keyset.next() ) {
+                if (keyset.next()) {
                     // Retrieve the auto generated key(s).
                     int key = keyset.getInt(1);
                     System.out.println(key);
-                    insertHobby(actor.getHobbies(),key);
+                    insertHobby(actor.getHobbies(), key);
                 }
                 //count++;
                 // execute every 100 rows or less
                 //if (count % 100 == 0 || count == list.size()) {
                 //    statement.executeBatch();
                 //}
+            } catch (SQLException ex) {
+                System.out.println(ex.getMessage());
             }
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
         }
     }
     public void insertHobby(List<hobby> list, int persid) {

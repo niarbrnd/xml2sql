@@ -8,6 +8,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.Array;
 import java.sql.SQLException;
 import java.util.*;
@@ -41,7 +43,8 @@ public class xml2sql {
         System.out.println(options.get("-сonfig"));
         System.out.println(options.keySet().toArray()[0]);
          */
-        ResourceBundle resource = ResourceBundle.getBundle(options.get("-config"));
+        ResourceBundle resource = new  PropertyResourceBundle(Files.newInputStream(Paths.get(options.get("-config"))));
+        //ResourceBundle resource = ResourceBundle.getBundle(options.get("-config"));
         //System.out.println(a.getKeys().nextElement().toString());
         //System.out.println("ResourceBundle.getBundle");
         JAXBContext context = JAXBContext.newInstance(Persons.class);
