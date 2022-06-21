@@ -1,14 +1,12 @@
 package cib.learning;
 
-import cib.learning.libs.arguments;
-import cib.learning.connector.JTpqsl;
-import cib.learning.connector.pgsql;
+import cib.learning.Service.arguments;
+import cib.learning.DBconnectors.JTpqsl;
+import cib.learning.DBconnectors.pgsql;
 import cib.learning.data.Persons;
-import cib.learning.libs.xml;
+import cib.learning.Service.xml;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -17,10 +15,10 @@ import java.util.*;
 
 public class xml2sql {
     public static void main(String[] args) throws JAXBException, IOException, SQLException {
-        System.out.println("Start app");
+      /*  System.out.println("Start app");
         for(int i = 0; i<args.length; i++) {
             System.out.println("args[" + i + "]: " + args[i]);
-        }
+        }*/
         Map<String, String> options = new arguments().get(args);
         /*ResourceBundle a = ResourceBundle.getBundle("config");
         /*System.out.println(options.toString());

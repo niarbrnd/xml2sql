@@ -1,4 +1,4 @@
-package cib.learning.libs;
+package cib.learning.Service;
 
 import java.util.HashMap;
 import java.util.Map;

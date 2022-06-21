@@ -1,4 +1,4 @@
-package cib.learning.libs;
+package cib.learning.Service;
 
 import cib.learning.data.Persons;
 
@@ -6,7 +6,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.sql.SQLException;
 
 public class xml {
     public Persons getPerson(String pathtoxml) throws JAXBException, FileNotFoundException {

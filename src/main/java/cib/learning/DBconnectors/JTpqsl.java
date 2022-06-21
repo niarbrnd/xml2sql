@@ -1,4 +1,4 @@
-package cib.learning.connector;
+package cib.learning.DBconnectors;
 
 import cib.learning.data.Person;
 import cib.learning.data.Persons;
