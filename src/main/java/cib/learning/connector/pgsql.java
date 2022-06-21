@@ -71,7 +71,7 @@ public class pgsql {
                 if ( keyset.next() ) {
                     // Retrieve the auto generated key(s).
                     int key = keyset.getInt(1);
-                    System.out.println(key);
+                    //System.out.println(key);
                     insertHobby(actor.getHobbies(),key);
                 }
                 //count++;
