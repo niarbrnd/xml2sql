@@ -114,7 +114,16 @@ public class pgsql {
         try {
             PreparedStatement statement = conn.prepareStatement(resource.getString("getHobby"),Statement.RETURN_GENERATED_KEYS);
             statement.setInt(1,idpers);
-            //conn.
+            ResultSet rs=statement.executeQuery();
+            // Количество колонок в результирующем запросе
+            int columns = rs.getMetaData().getColumnCount();
+            // Перебор строк с данными
+            while(rs.next()){
+                for (int i = 1; i <= columns; i++){
+                    System.out.print(rs.getString(i) + "\t");
+                }
+                System.out.println();
+            }
         } catch (SQLException e) {
             System.out.println("CREATE TABLE Failed");
             e.printStackTrace();
@@ -123,7 +132,7 @@ public class pgsql {
         //insertPerson(pers.getPersons());
         return hobbies;
     }
-    public Persons getPersons(Persons pers) {
+    public boolean getPersons(Persons pers) {
         try {
             Class.forName("org.postgresql.Driver");
         } catch (ClassNotFoundException e) {

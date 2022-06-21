@@ -35,7 +35,7 @@ public class xml2sql {
         pgsql con =new pgsql();
         con.resource=resource;
         con.save(pers);
-
+        con.getHobby(1);
         JTpqsl conjtemplate= new JTpqsl();
         conjtemplate.resource=resource;
         conjtemplate.save(pers);
