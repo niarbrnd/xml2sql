@@ -4,8 +4,8 @@ import cib.learning.data.Persons;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import javax.xml.bind.Marshaller;
+import java.io.*;
 
 public class xml {
     public Persons getPerson(String pathtoxml) throws JAXBException, FileNotFoundException {
@@ -28,5 +28,29 @@ public class xml {
                 e.printStackTrace();
         }
         return pers;
+    }
+    public boolean exportPersontoFile(Persons pers, String pathexport) throws IOException {
+        FileWriter filexml;
+        try {
+            filexml = new FileWriter(pathexport);
+        } catch (FileNotFoundException e) {
+            System.out.println("file xml "+pathexport+" not write");
+            e.printStackTrace();
+            return false;
+        }
+        try {
+            JAXBContext context = JAXBContext.newInstance(Persons.class);
+            //Create Marshaller
+            Marshaller jaxbMarshaller = context.createMarshaller();
+            //Required formatting??
+            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            jaxbMarshaller.marshal(pers,filexml);
+            System.out.println("Export XML export to "+pathexport);
+        }
+        catch (JAXBException e) {
+            System.out.println("Export XML Failed");
+            e.printStackTrace();
+        }
+        return false;
     }
 }

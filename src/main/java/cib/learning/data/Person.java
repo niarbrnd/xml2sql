@@ -15,6 +15,7 @@ import java.util.List;
 @Setter
 @Getter
 public class Person {
+    private int id;
     @XmlElement
     private String name;
     @XmlElement

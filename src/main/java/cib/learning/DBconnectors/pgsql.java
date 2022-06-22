@@ -108,25 +108,25 @@ public class pgsql {
             System.out.println(ex.getMessage());
         }
     }
-    public List<hobby> getHobby(int idpers) {
+    private List<hobby> getHobby(int idpers) {
         List<hobby> hobbies =new ArrayList<>();
         Statement stmt = null;
         try {
-            PreparedStatement statement = conn.prepareStatement(resource.getString("getHobby"),Statement.RETURN_GENERATED_KEYS);
+            PreparedStatement statement = conn.prepareStatement(resource.getString("getHobby"));
             statement.setInt(1,idpers);
             ResultSet rs=statement.executeQuery();
             // Количество колонок в результирующем запросе
             int columns = rs.getMetaData().getColumnCount();
             // Перебор строк с данными
             while(rs.next()){
-                for (int i = 1; i <= columns; i++){
+                /*for (int i = 1; i <= columns; i++){
                     //System.out.print(rs.getString(i) + "\t");
-                }
+                }*/
                 hobby h=new hobby();
                 h.setComplexity(rs.getInt("complexity"));
                 h.setHobby_name(rs.getString("hobby_name"));
                 hobbies.add(h);
-                System.out.println();
+                //System.out.println();
             }
         } catch (SQLException e) {
             System.out.println("CREATE TABLE Failed");
@@ -136,42 +136,34 @@ public class pgsql {
         //insertPerson(pers.getPersons());
         return hobbies;
     }
-    public boolean getPersons(Persons pers) {
-        try {
-            Class.forName("org.postgresql.Driver");
-        } catch (ClassNotFoundException e) {
-            System.out.println("PostgreSQL JDBC Driver is not found. Include it in your library path ");
-            e.printStackTrace();
-            return false;
-        }
-        System.out.println("PostgreSQL JDBC Driver successfully connected");
-        Connection connection = null;
+    public Persons getPersons() {
+        List<Person> Pers =new ArrayList<>();
+        Persons P = new Persons();
         Statement stmt = null;
         try {
-            connection = DriverManager
-                    .getConnection(
-                            resource.getString("DB_URL"),
-                            resource.getString("USER"),
-                            resource.getString("PASS"));
-        } catch (SQLException e) {
-            System.out.println("Connection Failed");
-            e.printStackTrace();
-            return false;
-        }
-        if (connection != null) {
-            System.out.println("You successfully connected to database now");
-        } else {
-            System.out.println("Failed to make connection to database");
-        }
-        try {
-            stmt = connection.createStatement();
-            stmt.executeUpdate(resource.getString("ct"));
+            PreparedStatement statement = conn.prepareStatement(resource.getString("getPersons"));
+            ResultSet rs=statement.executeQuery();
+            // Количество колонок в результирующем запросе
+            int columns = rs.getMetaData().getColumnCount();
+            // Перебор строк с данными
+            while(rs.next()){
+                /*for (int i = 1; i <= columns; i++){
+                    //System.out.print(rs.getString(i) + "\t");
+                }*/
+                Person p=new Person();
+                p.setName(rs.getString("name"));
+                p.setBirthday(rs.getDate("birthday"));
+                p.setHobbies(getHobby(rs.getInt("id")));
+                Pers.add(p);
+                //System.out.println();
+            }
         } catch (SQLException e) {
             System.out.println("CREATE TABLE Failed");
             e.printStackTrace();
-            return false;
+            return P;
         }
-        insertPerson(pers.getPersons());
-        return true;
+        //insertPerson(pers.getPersons());
+        P.setPersons(Pers);
+        return P;
     }
 }

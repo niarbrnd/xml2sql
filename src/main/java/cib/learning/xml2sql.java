@@ -30,15 +30,17 @@ public class xml2sql {
         System.out.println(options.keySet().toArray()[0]);
          */
         ResourceBundle resource = new  PropertyResourceBundle(Files.newInputStream(Paths.get(options.get("-config"))));
-        Persons pers=new xml().getPerson(options.get("-xml"));
+        Persons pers=new xml().getPerson(options.get("-xmlin"));
         //System.out.println(pers.toString());
         pgsql con =new pgsql();
         con.resource=resource;
         con.save(pers);
-        System.out.println(con.getHobby(2));
+        //Boolean save = new xml().exportPersontoFile(con.getPersons(),options.get("-xmlout"));
         JTpqsl conjtemplate= new JTpqsl();
         conjtemplate.resource=resource;
         conjtemplate.save(pers);
+        Boolean save = new xml().exportPersontoFile(conjtemplate.getPersons(),options.get("-xmlout"));
+        //System.out.println(conjtemplate.getPersons());
         System.out.println("Stop  app");
     }
 }
