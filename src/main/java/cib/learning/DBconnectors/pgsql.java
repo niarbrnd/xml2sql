@@ -109,7 +109,7 @@ public class pgsql {
         }
     }
     public List<hobby> getHobby(int idpers) {
-        List<hobby> hobbies =new ArrayList<hobby>();
+        List<hobby> hobbies =new ArrayList<>();
         Statement stmt = null;
         try {
             PreparedStatement statement = conn.prepareStatement(resource.getString("getHobby"),Statement.RETURN_GENERATED_KEYS);
@@ -120,8 +120,12 @@ public class pgsql {
             // Перебор строк с данными
             while(rs.next()){
                 for (int i = 1; i <= columns; i++){
-                    System.out.print(rs.getString(i) + "\t");
+                    //System.out.print(rs.getString(i) + "\t");
                 }
+                hobby h=new hobby();
+                h.setComplexity(rs.getInt("complexity"));
+                h.setHobby_name(rs.getString("hobby_name"));
+                hobbies.add(h);
                 System.out.println();
             }
         } catch (SQLException e) {
